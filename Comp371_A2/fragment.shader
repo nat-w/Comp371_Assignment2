@@ -1,33 +1,32 @@
 #version 330 core
 
-out vec4 color;
+out vec4 result;
 
-uniform vec3 objectcolor;
-uniform vec3 lightColor;
-uniform vec3 lightPosition;
-uniform vec3 viewPosition;
+uniform vec3 object_color;
+uniform vec3 light_color;
+uniform vec3 light_position;
+uniform vec3 view_position;
 
-in vec3 fragmentPosition;
+in vec3 fragment_position;
 in vec3 norm;
 
 void main()
 {
     // ambient
-    float ambient_strength = 0.1;
-    vec3 ambient = light_color * ambient_strength;
+    float ambient_strength = 0.1f;
+    vec3 ambient = ambient_strength * light_color;
 
     // diffuse
-    vec3 normal = normalize(norm);
-    vec3 light_direction = light_position - fragment_position;
-    diffuse_strength = max(dot(light_direction, normal), 0.0);
-    vec3 diffuse = light_color * diffuse_strength;
+    vec3 light_direction = normalize(light_position - fragment_position);
+    float diffuse_strength = max(dot(normalize(norm), light_direction), 0.0f);
+    vec3 diffuse = diffuse_strength * light_color;
 
     // specular
     vec3 view_direction = normalize(view_position - fragment_position);
-    vec3 r_light_direction = reflect(-light_direction, normal);
-    float specular_strength = pow(max(dot(r_light_direction view_direction), 0.0),-32);
-    vec3 specular = light_color * specular_strength;
+    vec3 reflect_light_direction = reflect(-light_direction, normalize(norm));
+    float specular_strength = pow(max(dot(reflect_light_direction, view_direction), 0.0f), 32);
+    vec3 specular = specular_strength * light_color;
 
-    vec3 result = (specular + diffuse + ambient) * object_color;
-    color = vec4(result, 1.0);
+    vec3 color = (specular + diffuse + ambient) * object_color;
+    result = vec4(color, 1.0f);
 } 

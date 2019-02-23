@@ -18,7 +18,7 @@ bool loadOBJ(
 	std::vector<glm::vec3> temp_normals;
 
 	FILE * file;
-    file = fopen("/Users/nat/Desktop/Classes/Comp 371/Comp371_A1/Comp371_A1/cat.obj", "r");
+    file = fopen("/Users/nat/Desktop/Classes/Comp 371/Comp371_A2/Comp371_A2/heracles.obj", "r");
 //    if (_errno != 0) {
 //        printf("Impossible to open the file ! Are you in the right path ?\n");
 //        getchar();

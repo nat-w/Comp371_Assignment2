@@ -23,11 +23,11 @@ float xPrev = 0.0f, yPrev = 0.0f;
 bool canMove = false;
 
 // camera
-glm::vec3 camera_position = glm::vec3(0,2,-5);
-glm::vec3 camera_direction = glm::vec3(0,0,1);
+glm::vec3 camera_position = glm::vec3(0,5,20);
+glm::vec3 camera_direction = glm::vec3(0,0,-1);
 glm::vec3 camera_up = glm::vec3(0,1,0);
 
-glm::vec3 translate_factor = glm::vec3(0.0f,0.0f,0.0f);
+glm::vec3 translate_factor = glm::vec3(0.0f,0.0f,4.0f);
 glm::vec3 scale_factor = glm::vec3(0.1f,0.1f,0.1f);
 glm::vec3 axis = glm::vec3(0,0,1);
 float angle = 0.0f;
@@ -56,7 +56,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     if (action == GLFW_PRESS) {
+        std::cout << key << std::endl;
         switch (key) {
+            // close window
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(window, GL_TRUE);
             // move camera forward
             case GLFW_KEY_W:
                 camera_position += camera_direction;
@@ -67,27 +71,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 break;
             // move camera left
             case GLFW_KEY_A:
-                camera_position += glm::cross(camera_direction, camera_up);
+                camera_position -= glm::cross(camera_direction, camera_up);
                 break;
             // move camera right
             case GLFW_KEY_D:
-                camera_position -= glm::cross(camera_direction, camera_up);
+                camera_position += glm::cross(camera_direction, camera_up);
                 break;
             // rotate camera left about up
             case GLFW_KEY_LEFT:
-                camera_position += glm::vec3(-1,0,0);
+                //FIXME
                 break;
             // rotate camera right about up
             case GLFW_KEY_RIGHT:
-                camera_position += glm::vec3(1,0,0);
+                //FIXME
                 break;
             // rotate camera up about right
             case GLFW_KEY_UP:
-                camera_position += glm::vec3(0,1,0);
+                //FIXME
                 break;
             // rotate camera down about right
             case GLFW_KEY_DOWN:
-                camera_position += glm::vec3(0,-1,0);
+                //FIXME
                 break;
             // scale up object
             case GLFW_KEY_O:
@@ -149,7 +153,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const GLuint WIDTH = 800, HEIGHT = 800;
 GLFWwindow *window;
 
-
 int init() {
 	std::cout << "Starting GLFW context, OpenGL 4.1" << std::endl;
 	glfwInit();
@@ -161,7 +164,7 @@ int init() {
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	//WINDOW is created
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Assignment 1", nullptr, nullptr);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Assignment 2", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -218,45 +221,48 @@ int main()
     //          SHADERS
     //*******************************
     
-	GLuint shader = loadSHADER("/Users/nat/Desktop/Classes/Comp 371/Comp371_A1/Comp371_A1/vertex.shader", "/Users/nat/Desktop/Classes/Comp 371/Comp371_A1/Comp371_A1/fragment.shader");
+	GLuint shader = loadSHADER("/Users/nat/Desktop/Classes/Comp 371/Comp371_A2/Comp371_A2/vertex.shader", "/Users/nat/Desktop/Classes/Comp 371/Comp371_A2/Comp371_A2/fragment.shader");
     
     // OBJ file vertices
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
-	loadOBJ("/Users/nat/Desktop/Classes/Comp 371/Comp371_A1/Comp371_A1/cat.obj", vertices, normals, UVs);
+	loadOBJ("/Users/nat/Desktop/Classes/Comp 371/Comp371_A2/Comp371_A2/heracles.obj", vertices, normals, UVs);
     
     //*******************************
     //      SET UP VAO AND VBO
     //*******************************
     
-    // VAO and VBO
-	GLuint VAO, VBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	GLuint vertices_VBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &vertices_VBO);
-
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    
+    GLuint vertices_VBO;
+    glGenBuffers(1, &vertices_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vertices_VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(0);
+    
+    GLuint normals_VBO;
+    glGenBuffers(1, &normals_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, normals_VBO);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals.front(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+    
+    GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertices.size() * sizeof(int), &vertices.front(), GL_STATIC_DRAW);
+    
+    // Unbind VAO
+    glBindVertexArray(0);
     
     //*******************************
     //            CAMERA
     //*******************************
     
-    // send matrices to shader
     GLuint ModelID = glGetUniformLocation(shader, "Model");
     GLuint ViewID = glGetUniformLocation(shader, "View");
     GLuint ProjectionID = glGetUniformLocation(shader, "Projection");
@@ -277,6 +283,12 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_ALWAYS);
     
+    glUniform3fv(glGetUniformLocation(shader, "object_color"), 1, glm::value_ptr(glm::vec3(0.5,0.5,0)));
+    glUniform3fv(glGetUniformLocation(shader, "light_color"), 1, glm::value_ptr(glm::vec3(1,1,1)));
+    glUniform3fv(glGetUniformLocation(shader, "light_position"), 1, glm::value_ptr(glm::vec3(0,5,0)));
+    glUniform3fv(glGetUniformLocation(shader, "view_position"), 1, glm::value_ptr(camera_position));
+    
+    
     //*******************************
     //           GAME LOOP
     //*******************************
@@ -289,24 +301,23 @@ int main()
     // Render
 		// Clear the colorbuffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glUseProgram(shader);
         
         // apply transformations
-        View = glm::lookAt(camera_direction, camera_position, camera_up);
+        View = glm::lookAt(camera_direction, camera_position + camera_direction, camera_up);
         
         glm::mat4 translator = glm::translate(glm::mat4(1.0f), translate_factor);
         glm::mat4 rotator = glm::rotate(glm::mat4(1.0f), angle, axis);
+        rotator = glm::rotate(glm::mat4(1.0f), -90.0f, glm::vec3(1,0,0));
         glm::mat4 scalor = glm::scale(glm::mat4(1.0f), scale_factor);
         Model = translator * rotator * scalor;
         
-        
-        // calculate MVP and pass to shader
-        glm::mat4 MVP = Projection * View * Model;
-        glUniformMatrix4fv(ModelID, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ViewID, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, &MVP[0][0]);
+        // pass MVP to shader
+        glUniformMatrix4fv(ModelID, 1, 0, glm::value_ptr(Model));
+        glUniformMatrix4fv(ViewID, 1, GL_FALSE, glm::value_ptr(View));
+        glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, glm::value_ptr(Projection));
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());

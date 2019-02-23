@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		414A9218221E01E9001983DA /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 414A920D221E01E9001983DA /* stdafx.cpp */; };
 		414A9219221E01E9001983DA /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 414A920E221E01E9001983DA /* Main.cpp */; };
+		41C422022221A3E9004C4DE5 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C422012221A3E9004C4DE5 /* OpenGL.framework */; };
+		41C422042221A406004C4DE5 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C422032221A406004C4DE5 /* libGLEW.2.1.0.dylib */; };
+		41C422062221A422004C4DE5 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C422052221A422004C4DE5 /* libglfw.3.2.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +42,10 @@
 		414A9215221E01E9001983DA /* fragment.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment.shader; sourceTree = "<group>"; };
 		414A9216221E01E9001983DA /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		414A9217221E01E9001983DA /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		41C421FF2221A3C9004C4DE5 /* heracles.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = heracles.obj; path = ../../../../../Downloads/heracles.obj; sourceTree = "<group>"; };
+		41C422012221A3E9004C4DE5 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		41C422032221A406004C4DE5 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../opt/local/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
+		41C422052221A422004C4DE5 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../opt/local/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +53,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41C422062221A422004C4DE5 /* libglfw.3.2.dylib in Frameworks */,
+				41C422042221A406004C4DE5 /* libGLEW.2.1.0.dylib in Frameworks */,
+				41C422022221A3E9004C4DE5 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +67,7 @@
 			children = (
 				414A9202221E01AE001983DA /* Comp371_A2 */,
 				414A9201221E01AE001983DA /* Products */,
+				41C422002221A3E9004C4DE5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,22 +82,33 @@
 		414A9202221E01AE001983DA /* Comp371_A2 */ = {
 			isa = PBXGroup;
 			children = (
+				41C421FF2221A3C9004C4DE5 /* heracles.obj */,
 				414A9212221E01E9001983DA /* cat.obj */,
 				414A920A221E01E9001983DA /* cube.obj */,
-				414A9215221E01E9001983DA /* fragment.shader */,
 				414A9211221E01E9001983DA /* glew */,
 				414A9213221E01E9001983DA /* glfw */,
 				414A9210221E01E9001983DA /* glm */,
 				414A920E221E01E9001983DA /* Main.cpp */,
+				414A920F221E01E9001983DA /* vertex.shader */,
+				414A9215221E01E9001983DA /* fragment.shader */,
 				414A9214221E01E9001983DA /* OBJloader.h */,
 				414A9216221E01E9001983DA /* README.txt */,
 				414A920B221E01E9001983DA /* shaderloader.h */,
 				414A920D221E01E9001983DA /* stdafx.cpp */,
 				414A920C221E01E9001983DA /* stdafx.h */,
 				414A9217221E01E9001983DA /* targetver.h */,
-				414A920F221E01E9001983DA /* vertex.shader */,
 			);
 			path = Comp371_A2;
+			sourceTree = "<group>";
+		};
+		41C422002221A3E9004C4DE5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				41C422052221A422004C4DE5 /* libglfw.3.2.dylib */,
+				41C422032221A406004C4DE5 /* libGLEW.2.1.0.dylib */,
+				41C422012221A3E9004C4DE5 /* OpenGL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,6 +290,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = "${SRCROOT}";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -276,6 +303,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = "${SRCROOT}";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
