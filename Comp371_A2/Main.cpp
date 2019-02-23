@@ -21,6 +21,8 @@ using namespace std;
 
 float xPrev = 0.0f, yPrev = 0.0f;
 bool canMove = false;
+bool gourard = false;
+bool red = true, green = true, blue = true;
 
 // camera
 glm::vec3 camera_position = glm::vec3(0,5,20);
@@ -29,8 +31,11 @@ glm::vec3 camera_up = glm::vec3(0,1,0);
 
 glm::vec3 translate_factor = glm::vec3(0.0f,0.0f,4.0f);
 glm::vec3 scale_factor = glm::vec3(0.1f,0.1f,0.1f);
-glm::vec3 axis = glm::vec3(0,0,1);
-float angle = 0.0f;
+glm::vec3 axis = glm::vec3(1,0,0);
+float angle = -90.0f;
+
+glm::vec3 light_color = glm::vec3(0.8f, 0.8f, 0.8f);
+glm::vec3 object_color = glm::vec3(0.6f, 0.4f, 0.2f);
 
 //*******************************
 //            INPUT
@@ -61,6 +66,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             // close window
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(window, GL_TRUE);
+            // resets model and camera
+            case GLFW_KEY_ENTER:
+                camera_position = glm::vec3(0,5,20);
+                camera_direction = glm::vec3(0,0,-1);
+                camera_up = glm::vec3(0,1,0);
+                translate_factor = glm::vec3(0.0f,0.0f,4.0f);
+                scale_factor = glm::vec3(0.1f,0.1f,0.1f);
+                angle = -90.0f;
+                axis = glm::vec3(1,0,0);
             // move camera forward
             case GLFW_KEY_W:
                 camera_position += camera_direction;
@@ -71,11 +85,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 break;
             // move camera left
             case GLFW_KEY_A:
-                camera_position -= glm::cross(camera_direction, camera_up);
+                camera_position += glm::cross(camera_direction, camera_up);
                 break;
             // move camera right
             case GLFW_KEY_D:
-                camera_position += glm::cross(camera_direction, camera_up);
+                camera_position -= glm::cross(camera_direction, camera_up);
                 break;
             // rotate camera left about up
             case GLFW_KEY_LEFT:
@@ -139,6 +153,53 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             // move object along -Z
             case GLFW_KEY_U:
                 translate_factor += glm::vec3(0,0,-0.5f);
+                break;
+            case GLFW_KEY_1:
+                if (red) {
+                    red = !red;
+                    light_color.x = 0.0f;
+                    object_color.x = 0.0f;
+                }
+                else {
+                    light_color.x = 0.8f;
+                    object_color.x = 0.6f;
+                    red = !red;
+                }
+                break;
+            case GLFW_KEY_2:
+                if (green) {
+                    light_color.y = 0.0f;
+                    object_color.y = 0.0f;
+                    green = !green;
+                }
+                else {
+                    light_color.y = 0.8f;
+                    object_color.y = 0.4f;
+                    green = !green;
+                }
+                break;
+            case GLFW_KEY_3:
+                if (blue) {
+                    light_color.z = 0.0f;
+                    object_color.z = 0.0f;
+                    blue = !blue;
+                }
+                else {
+                    light_color.z = 0.8f;
+                    object_color.z = 0.2f;
+                    blue = !blue;
+                }
+                break;
+            case GLFW_KEY_4:
+                break;
+            case GLFW_KEY_5:
+                gourard = !gourard;
+                break;
+            case GLFW_KEY_6:
+                break;
+            case GLFW_KEY_7:
+                break;
+            case GLFW_KEY_8:
                 break;
             default:
                 break;
@@ -273,7 +334,7 @@ int main()
     // camera
     glm::mat4 View = glm::lookAt(camera_direction, camera_position, camera_up);
     
-    // object
+    // model matrix
     glm::mat4 Model = glm::mat4(1.0f);
     
     // backface culling
@@ -282,12 +343,6 @@ int main()
     // depth testing
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_ALWAYS);
-    
-    glUniform3fv(glGetUniformLocation(shader, "object_color"), 1, glm::value_ptr(glm::vec3(0.5,0.5,0)));
-    glUniform3fv(glGetUniformLocation(shader, "light_color"), 1, glm::value_ptr(glm::vec3(1,1,1)));
-    glUniform3fv(glGetUniformLocation(shader, "light_position"), 1, glm::value_ptr(glm::vec3(0,5,0)));
-    glUniform3fv(glGetUniformLocation(shader, "view_position"), 1, glm::value_ptr(camera_position));
-    
     
     //*******************************
     //           GAME LOOP
@@ -300,7 +355,7 @@ int main()
 
     // Render
 		// Clear the colorbuffer
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.3f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glUseProgram(shader);
@@ -310,7 +365,6 @@ int main()
         
         glm::mat4 translator = glm::translate(glm::mat4(1.0f), translate_factor);
         glm::mat4 rotator = glm::rotate(glm::mat4(1.0f), angle, axis);
-        rotator = glm::rotate(glm::mat4(1.0f), -90.0f, glm::vec3(1,0,0));
         glm::mat4 scalor = glm::scale(glm::mat4(1.0f), scale_factor);
         Model = translator * rotator * scalor;
         
@@ -318,6 +372,11 @@ int main()
         glUniformMatrix4fv(ModelID, 1, 0, glm::value_ptr(Model));
         glUniformMatrix4fv(ViewID, 1, GL_FALSE, glm::value_ptr(View));
         glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, glm::value_ptr(Projection));
+        
+        glUniform3fv(glGetUniformLocation(shader, "object_color"), 1, glm::value_ptr(object_color));
+        glUniform3fv(glGetUniformLocation(shader, "light_color"), 1, glm::value_ptr(light_color));
+        glUniform3fv(glGetUniformLocation(shader, "light_position"), 1, glm::value_ptr(glm::vec3(0,20,5)));
+        glUniform3fv(glGetUniformLocation(shader, "view_position"), 1, glm::value_ptr(camera_position));
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
