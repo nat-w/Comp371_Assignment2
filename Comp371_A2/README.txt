@@ -21,6 +21,14 @@ I - move object along +Y
 K - move object along -Y
 Y - move object along +Z 
 U - move object along -Z
+1 - turn off red
+2 - turn off green
+3 - turn off blue
+4 - turn on all
+5 - Gouraud shader toggle
+6 - light
+7 - normal
+8 - grey
 
 I had to make all paths absolute for the code to work on my machine, therefore it might not work when run on another computer.
 

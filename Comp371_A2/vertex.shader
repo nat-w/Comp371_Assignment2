@@ -6,7 +6,9 @@ layout (location = 1) in vec3 normals;
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
+
 uniform int gourard;
+
 uniform vec3 object_color;
 uniform vec3 light_color;
 uniform vec3 light_position;

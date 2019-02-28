@@ -6,6 +6,7 @@ uniform vec3 object_color;
 uniform vec3 light_color;
 uniform vec3 light_position;
 uniform vec3 view_position;
+
 uniform int gourard;
 uniform int lightOff;
 uniform int normalColor;

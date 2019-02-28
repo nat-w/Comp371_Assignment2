@@ -31,11 +31,13 @@ glm::vec3 camera_position = glm::vec3(0,5,20);
 glm::vec3 camera_direction = glm::vec3(0,0,-1);
 glm::vec3 camera_up = glm::vec3(0,1,0);
 
+// model
 glm::vec3 translate_factor = glm::vec3(0.0f,0.0f,4.0f);
 glm::vec3 scale_factor = glm::vec3(0.1f,0.1f,0.1f);
 glm::vec3 axis = glm::vec3(1,0,0);
 float angle = -90.0f;
 
+// light and object color
 glm::vec3 light_color = glm::vec3(0.8f, 0.8f, 0.8f);
 glm::vec3 object_color = glm::vec3(0.6f, 0.4f, 0.2f);
 
@@ -95,19 +97,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 break;
             // rotate camera left about up
             case GLFW_KEY_LEFT:
-                //FIXME
+                camera_position.x += 0.5f;
                 break;
             // rotate camera right about up
             case GLFW_KEY_RIGHT:
-                //FIXME
+                camera_position.x -= 0.5f;
                 break;
             // rotate camera up about right
             case GLFW_KEY_UP:
-                //FIXME
+                camera_position.y += 0.5f;
                 break;
             // rotate camera down about right
             case GLFW_KEY_DOWN:
-                //FIXME
+                camera_position.y -= 0.5f;
                 break;
             // scale up object
             case GLFW_KEY_O:
@@ -389,13 +391,15 @@ int main()
         
         // pass MVP to shader
         glUniformMatrix4fv(ModelID, 1, 0, glm::value_ptr(Model));
-        glUniformMatrix4fv(ViewID, 1, GL_FALSE, glm::value_ptr(View));
-        glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, glm::value_ptr(Projection));
+        glUniformMatrix4fv(ViewID, 1, 0, glm::value_ptr(View));
+        glUniformMatrix4fv(ProjectionID, 1, 0, glm::value_ptr(Projection));
         
+        // pass light color and variables to shader
         glUniform3fv(glGetUniformLocation(shader, "object_color"), 1, glm::value_ptr(object_color));
         glUniform3fv(glGetUniformLocation(shader, "light_color"), 1, glm::value_ptr(light_color));
         glUniform3fv(glGetUniformLocation(shader, "light_position"), 1, glm::value_ptr(glm::vec3(0,20,5)));
         glUniform3fv(glGetUniformLocation(shader, "view_position"), 1, glm::value_ptr(camera_position));
+        
         glUniform1i(glGetUniformLocation(shader, "gourard"), gourard);
         glUniform1i(glGetUniformLocation(shader, "lightOff"), lightOff);
         glUniform1i(glGetUniformLocation(shader, "normalColor"), normalColor);
