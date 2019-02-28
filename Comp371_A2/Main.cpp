@@ -22,7 +22,9 @@ using namespace std;
 float xPrev = 0.0f, yPrev = 0.0f;
 bool canMove = false;
 bool gourard = false;
-bool red = true, green = true, blue = true;
+bool red = true, green = true, blue = true, grey = false;
+bool lightOff = false;
+bool normalColor = false;
 
 // camera
 glm::vec3 camera_position = glm::vec3(0,5,20);
@@ -191,15 +193,32 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 }
                 break;
             case GLFW_KEY_4:
+                light_color = glm::vec3(0.8, 0.8, 0.8);
+                object_color = glm::vec3(0.6, 0.4, 0.2);
+                red = true;
+                green = true;
+                blue = true;
                 break;
             case GLFW_KEY_5:
                 gourard = !gourard;
                 break;
             case GLFW_KEY_6:
+                lightOff = !lightOff;
                 break;
             case GLFW_KEY_7:
+                normalColor = !normalColor;
                 break;
             case GLFW_KEY_8:
+                if (!grey) {
+                    light_color = glm::vec3(0.2989 * 0.8, 0.5870 * 0.8, 0.1140 * 0.8);
+                    object_color = glm::vec3(0.2989 * 0.6, 0.5870 * 0.4, 0.1140 * 0.2);
+                    grey = !grey;
+                }
+                else {
+                    light_color = glm::vec3(0.8, 0.8, 0.8);
+                    object_color = glm::vec3(0.6, 0.4, 0.2);
+                    grey = !grey;
+                }
                 break;
             default:
                 break;
@@ -355,7 +374,7 @@ int main()
 
     // Render
 		// Clear the colorbuffer
-		glClearColor(0.3f, 0.3f, 0.4f, 1.0f);
+		glClearColor(0.3f, 0.4f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glUseProgram(shader);
@@ -377,6 +396,9 @@ int main()
         glUniform3fv(glGetUniformLocation(shader, "light_color"), 1, glm::value_ptr(light_color));
         glUniform3fv(glGetUniformLocation(shader, "light_position"), 1, glm::value_ptr(glm::vec3(0,20,5)));
         glUniform3fv(glGetUniformLocation(shader, "view_position"), 1, glm::value_ptr(camera_position));
+        glUniform1i(glGetUniformLocation(shader, "gourard"), gourard);
+        glUniform1i(glGetUniformLocation(shader, "lightOff"), lightOff);
+        glUniform1i(glGetUniformLocation(shader, "normalColor"), normalColor);
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());

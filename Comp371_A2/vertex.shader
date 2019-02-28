@@ -6,7 +6,7 @@ layout (location = 1) in vec3 normals;
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
-uniform bool gourard;
+uniform int gourard;
 uniform vec3 object_color;
 uniform vec3 light_color;
 uniform vec3 light_position;
@@ -18,14 +18,14 @@ out vec3 norm;
 
 void main()
 {
-    if (gourard) {
+    if (gourard == 1) {
         // ambient
         float ambient_strength = 0.15f;
         vec3 ambient = ambient_strength * light_color;
 
         // diffuse
         vec3 light_direction = normalize(light_position - fragment_position);
-        float diffuse_strength = max(dot(normalize(norm), light_direction), 0.0f);
+        float diffuse_strength = max(dot(normalize(normals), light_direction), 0.0f);
         vec3 diffuse = diffuse_strength * light_color;
 
         // specular
